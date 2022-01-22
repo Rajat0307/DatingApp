@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using API.Entities;
 using API.Interfaces;
 using Microsoft.Extensions.Configuration;
@@ -15,14 +12,14 @@ namespace API.Services
 {
     public class TokenService : ITokenService
     {
-        private readonly SymmetricSecurityKey _key; // syymetric encryption where only one key is used to both encrypt and decrypt 
-        public TokenService(IConfiguration config)  // constructor for injecting configuration in class
+        private readonly SymmetricSecurityKey _key;
+        public TokenService(IConfiguration config)
         {
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
         }
 
-        public string CreateToken(AppUser user)  //impementing Interface
-        { // main logic
+        public string CreateToken(AppUser user)
+        {
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.NameId, user.UserName)
@@ -35,7 +32,6 @@ namespace API.Services
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.Now.AddDays(7),
                 SigningCredentials = creds
-            
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
